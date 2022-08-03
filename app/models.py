@@ -15,4 +15,4 @@ class User(models.Model):
     date = models.DateTimeField(null=True)
     
     def __str__(self) -> str:
-        return(self)
+        return(self.name)
