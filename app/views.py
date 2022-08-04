@@ -58,7 +58,8 @@ class Userview(APIView):
                 
                 
     def delete(self, request, id):
-        user = User.objects.get()
+        user = User.objects.get(id)
+        serializer = self.serializer_class(user)
         user.delete()
         return Response({"message": "User is deleted"}, status=status.HTTP_400_BAD_REQUEST)            
      
@@ -73,5 +74,5 @@ class Loginview(APIView):
             token = Token.objects.get_or_create(user=user)
             print("NNJNMUNUMU", token)
             return Response({'token': str(token[0])})
-        return Response({'details': 'no user found'})
+        return Response({'details': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
      
