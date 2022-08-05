@@ -72,7 +72,7 @@ class Userview(APIView):
                 role = request.data.get('role')
             )
             #user = User.objects.get(id)
-            serializer = UserSerializer(user, data=request.data, partial=True)
+            serializer = UserSerializer(user,data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
             return Response(serializer.data)
@@ -113,14 +113,6 @@ class UserDetailsView(APIView):
     serializer_class = UserSerializer
     
     def get(self, request, id=None):
-        if id:
-            try:
-                user = get_object_or_404(User, id)
-                serializer = self.serializer_class(user)
-                return Response(serializer.data)
-            except User.DoesNotExist:
-                return Response({'details': 'does not found'}, status=status.HTTP_404_NOT_FOUND)
-        else:
             user = User.objects.filter()
             serializer = self.serializer_class(user, many=True)
             return Response(serializer.data)
