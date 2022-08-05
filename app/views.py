@@ -1,3 +1,4 @@
+from functools import partial
 from app.serializers import UserSerializer
 from .models import User
 from rest_framework.views import APIView
@@ -43,7 +44,26 @@ class Userview(APIView):
         #return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
             
     
-    def put(self, request, id=None):
+    # def put(self, request, id=None):
+    #     try:
+    #         user = User.objects.update(
+    #             name = request.data.get('name'),
+    #             email = request.data.get('email'),
+    #             password = request.data.get('password'),
+    #             role = request.data.get('role')
+    #         )
+    #         #user = User.objects.get(id)
+    #         serializer = UserSerializer(data=request.data)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #         return Response(serializer.data)
+    #     except:
+    #         return Response({"message": "Details does not found"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    
+    
+    
+    
+    def patch(self, request, id=None):
         try:
             user = User.objects.update(
                 name = request.data.get('name'),
@@ -52,24 +72,20 @@ class Userview(APIView):
                 role = request.data.get('role')
             )
             #user = User.objects.get(id)
-            serializer = UserSerializer(data=request.data)
+            serializer = UserSerializer(user, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
             return Response(serializer.data)
         except:
             return Response({"message": "Details does not found"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-    
-    
-    
-    
-    def patch(self, request, id=None):
-        user = User.objects.get(User, id)
-        #user = User.objects.get(id=id)
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response({"message": "Details does not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # user = User.objects.update()
+        # #user = User.objects.get(id=id)
+        # serializer = UserSerializer(user, data=request.data, partial=True)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data)
+        # return Response({"message": "Details does not found"}, status=status.HTTP_404_NOT_FOUND)
                 
                 
     def delete(self, request, id):
