@@ -1,14 +1,17 @@
 
 from django.contrib.auth.models import  BaseUserManager
+from django.contrib.auth.hashers import make_password
+
 
 class UserManager(BaseUserManager):
-    def create_user(self, name, email, password=None):
+    def create_user(self, name, email,role, password=None):
         if not email:
             raise ValueError('User must have an email address')
         
         user =  self.model(
             email = self.normalize_email(email),
-            name = name
+            name = name,
+            role=role
             )
         user.set_password(password),
         user.save(using=self._db)
