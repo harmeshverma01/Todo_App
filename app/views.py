@@ -1,16 +1,16 @@
-from app.serializers import UserSerializer, TaskSerializer
 from rest_framework import authentication, permissions
 from .utils import admin_required, manager_required
 from rest_framework.authtoken.models import Token
+from app.serializers import UserSerializer, AssignSerializer
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
-from .models import User, Assign, Task
+from .models import User, Assign
 from rest_framework import status
 from functools import partial
-from app import serializers
 
 
+#User APIs
 
 class Userview(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -34,46 +34,7 @@ class Userview(APIView):
         )
         serializer =  UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-            
-    
-    # def put(self, request, id=None):
-    #     try:
-            
-    #         user = User.objects.update(
-    #             name = request.data.get('name'),
-    #             email = request.data.get('email'),
-    #             password = request.data.get('password'),
-    #             role = request.data.get('role')
-    #         )
-    #         #user = User.objects.get(id)
-    #         serializer = UserSerializer(data=request.data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #         return Response(serializer.data)
-            
-    #     except:
-    #         return Response({"message": "Details does not found"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-    
-    
-    
-    
-    # def patch(self, request, id=None):
-    #     #user = User.objects.get(id)
-    #     serializer = UserSerializer(user,data=request.data, partial=True)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #     return Response(serializer.data)
-        
-        
-        # user = User.objects.update()
-        # #user = User.objects.get(id=id)
-        # serializer = UserSerializer(user, data=request.data, partial=True)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data)
-        # return Response({"message": "Details does not found"}, status=status.HTTP_404_NOT_FOUND)
-                
+       
                 
     def delete(self, request, id=None):
         user = User.objects.get(id=id)
@@ -81,6 +42,7 @@ class Userview(APIView):
         user.delete()
         return Response({"message": "User is deleted"}, status=status.HTTP_204_NO_CONTENT)            
         
+#Login APIs        
 class Loginview(APIView):
     serializer_class = UserSerializer
     def post(self, request):
@@ -90,7 +52,7 @@ class Loginview(APIView):
             return Response({'token': str(token[0])})
         return Response({'details': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
      
-
+#UserDetails APIs
 class UserDetailsView(APIView):
     serializer_class = UserSerializer
     peermission_classes = [admin_required]
@@ -116,38 +78,38 @@ class UserDetailsView(APIView):
        return Response(({"message": "User is deleted"}),status=status.HTTP_204_NO_CONTENT)     
         
 
-class TasKView(APIView):
-    
-    serializer_class = TaskSerializer
-    permission_classes = [manager_required]
+#ManagerView APIs
+class ManagerView(APIView):
+    serializer_class = UserSerializer
+    permission_classes = [admin_required]
     
     def get(self, request, id=None):
-        task = Task.objects.all()
-        serializers = self.serializer_class(task, many=True)
+        user = User.objects.filter(role="Manager")
+        serializers = self.serializer_class(user)
         return Response(serializers.data)
-        
-    def post(self, request,):
-        task = Task.objects.create(
-            title  = request.data.get("title"),
-            discription = request.data.get("discription")
+
+#AssignView        
+class AssignUserView(APIView):
+    serializer_class = AssignSerializer
+    permission_classes = [admin_required]
+    
+    def get(self, request, id=None):
+        user = Assign.objects.get()
+        serializers = self.serializer_class(user)
+        return Response(serializers.data)
+    
+    def post(self, request):
+        user = Assign.objects.create(
+            user = request.data.get("user"),
+            manager = request.data.get("manager")
             )
-        serializer = TaskSerializer(task)
-        return Response(serializer.data, status=status.HTTP_201_CREATED) 
-    
+        serializers = AssignSerializer(user)
+        return Response(serializers.data, status=status.HTTP_201_CREATED)
+        
     def patch(self, request, id=None):
-        try:
-            task = Task.objects.get(id=id)
-            serializers = self.serializer_class(task, data=request.data, partial=True)
-            if serializers.is_valid():
-                serializers.save()
-                return Response(serializers.data)
-        except Task.DoesNotExist:
-            return Response(({'message': 'Details Not Found'}), status=status.HTTP_404_NOT_FOUND)    
-               
-               
-    def delete(self, request, id=None):
-        task = Task.objects.get(id=id)
-        task.delete()
-        return Response(({'message': 'Task Deleted sucessfully'}), status=status.HTTP_204_NO_CONTENT)           
-    
-    
+        user = Assign.objects.get(id=id)
+        serializers = self.serializer_class(user, data=request.data, partial=True)
+        if serializers.is_valid():
+            serializers.save()
+        return Response(serializers.data) 
+        

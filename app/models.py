@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .manager import UserManager
 import uuid
-from app import manager
+
 
 
 # Create your models here.
@@ -42,12 +42,5 @@ class Assign(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="User", null=True)
     manager = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)   
     
-class Task(models.Model):
-    title = models.CharField(max_length=100)
-    discription = models.CharField(max_length=50, null=True)
-    completed = models.BooleanField(default=False, blank=True)
-    objects = models.Manager()
-    
-    def __str__(self) -> str:
-        return self.title
+
                 
