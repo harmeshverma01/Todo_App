@@ -40,7 +40,11 @@ class User(AbstractBaseUser):
     
 class Assign(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="User", null=True)
-    manager = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)   
+    manager = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)  
+     
     
+class TodoItem(models.Model):
+    todo_text = models.CharField(max_length=100, null=False)
+    todo_status = models.CharField(max_length=5, default="NOT DONE")    
 
                 

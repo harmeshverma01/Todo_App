@@ -1,17 +1,17 @@
+from app.serializers import UserSerializer, AssignSerializer
 from rest_framework import authentication, permissions
 from .utils import admin_required, manager_required
 from rest_framework.authtoken.models import Token
-from app.serializers import UserSerializer, AssignSerializer
+from django.shortcuts import render
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from .models import User, Assign
 from rest_framework import status
-from functools import partial
+from rest_framework import filters
 
 
 #User APIs
-
 class Userview(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permissions_classes = [permissions.IsAuthenticated, admin_required, manager_required]
@@ -19,8 +19,13 @@ class Userview(APIView):
     
     
     
+    
     def get(self, request, id=None):
         user = User.objects.all()
+        role = request.GET.get('role', None)
+        print(role, "admin")
+        if role is not None:
+            user = user.filter(role=role)
         serializer = self.serializer_class(user, many=True)
         return Response(serializer.data)
                     
@@ -36,11 +41,7 @@ class Userview(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
        
                 
-    def delete(self, request, id=None):
-        user = User.objects.get(id=id)
-        serializer = self.serializer_class(user, data=request.data)
-        user.delete()
-        return Response({"message": "User is deleted"}, status=status.HTTP_204_NO_CONTENT)            
+                
         
 #Login APIs        
 class Loginview(APIView):
@@ -52,6 +53,7 @@ class Loginview(APIView):
             return Response({'token': str(token[0])})
         return Response({'details': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
      
+
 #UserDetails APIs
 class UserDetailsView(APIView):
     serializer_class = UserSerializer
@@ -77,6 +79,7 @@ class UserDetailsView(APIView):
        user.delete()
        return Response(({"message": "User is deleted"}),status=status.HTTP_204_NO_CONTENT)     
         
+
 
 #ManagerView APIs
 class ManagerView(APIView):
@@ -112,4 +115,12 @@ class AssignUserView(APIView):
         if serializers.is_valid():
             serializers.save()
         return Response(serializers.data) 
+        
+        
+def getuser(request):
+    User.objects.all()
+    return render(request, "app/index.html", {})
+
+
+        
         
