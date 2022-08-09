@@ -9,15 +9,18 @@ from rest_framework import status
 from functools import partial
 
 
-# Create your views here.
+
 
 class TaskView(APIView):
     
     serializer_class = TaskSerializer
-    # Spermission_classes = [manager_required]
+    permission_classes = [manager_required]
     
     def get(self, request, id=None):
         task = Task.objects.all()
+        completed = request.GET.get('completed', None)
+        if task is not None:
+            task = task.filter(completed=completed)
         serializers = self.serializer_class(task, many=True)
         return Response(serializers.data)
         
@@ -44,5 +47,4 @@ class TaskView(APIView):
         task = Task.objects.get(id=id)
         task.delete()
         return Response(({'message': 'Task Deleted sucessfully'}), status=status.HTTP_204_NO_CONTENT) 
-    
     

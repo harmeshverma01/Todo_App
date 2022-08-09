@@ -2,13 +2,13 @@ from app.serializers import UserSerializer, AssignSerializer
 from rest_framework import authentication, permissions
 from .utils import admin_required, manager_required
 from rest_framework.authtoken.models import Token
-from django.shortcuts import render
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from .models import User, Assign
 from rest_framework import status
 from rest_framework import filters
+from django.shortcuts import render
 
 
 #User APIs
@@ -23,7 +23,6 @@ class Userview(APIView):
     def get(self, request, id=None):
         user = User.objects.all()
         role = request.GET.get('role', None)
-        print(role, "admin")
         if role is not None:
             user = user.filter(role=role)
         serializer = self.serializer_class(user, many=True)
