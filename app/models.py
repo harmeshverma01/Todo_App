@@ -13,7 +13,7 @@ class User(AbstractBaseUser):
         ("Manager", "Manager"),
         ("User", "User")
     )
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True)
     name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
     role = models.CharField(choices=ROLE_CHOICES, max_length=15)

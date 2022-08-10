@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from .models import User, Assign
 from rest_framework import status
-from rest_framework import filters
 from django.shortcuts import render
 
 

@@ -8,6 +8,6 @@ urlpatterns = [
     path('login', Loginview.as_view()),
     path('UserDetails/<uuid:id>', UserDetailsView.as_view()),
     path('Manager', ManagerView.as_view()),
-    path('AssignView', AssignUserView.as_view()),
-    path('', views.getuser, name='getuser')
+    path('Admin-Assign', AssignUserView.as_view()),
+    path('list-user', views.getuser, name='getuser')
 ]

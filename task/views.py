@@ -1,13 +1,9 @@
-from django.shortcuts import render
-from rest_framework import authentication, permissions
 from task.serializers import TaskSerializer
 from rest_framework.response import Response
 from app.utils import  manager_required
 from .models import Task
 from rest_framework.views import APIView
 from rest_framework import status
-from functools import partial
-
 
 
 
