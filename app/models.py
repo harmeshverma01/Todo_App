@@ -4,6 +4,7 @@ from .manager import UserManager
 import uuid
 
 
+
 # Create your models here.
 
 class User(AbstractBaseUser):
@@ -15,12 +16,13 @@ class User(AbstractBaseUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
-    role = models.CharField(choices=ROLE_CHOICES, max_length=15, )
+    role = models.CharField(choices=ROLE_CHOICES, max_length=15)
     date = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     objects = UserManager()
+    
 
     USERNAME_FIELD = 'email' 
     REQUIRED_FIELDS = ['name', 'password']
@@ -36,4 +38,11 @@ class User(AbstractBaseUser):
     def __str__(self) -> str:
         return(self.name)
     
-               
+class Assign(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="User", null=True)
+    manager = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)  
+     
+    
+  
+
+                
