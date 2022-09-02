@@ -16,9 +16,6 @@ class Userview(APIView):
     permissions_classes = [permissions.IsAuthenticated, admin_required, manager_required]
     serializer_class = UserSerializer
     
-    
-    
-    
     def get(self, request, id=None):
         user = User.objects.all()
         role = request.GET.get('role', None)
@@ -26,7 +23,6 @@ class Userview(APIView):
             user = user.filter(role=role)
         serializer = self.serializer_class(user, many=True)
         return Response(serializer.data)
-                    
     
     def post(self, request):
         user = User.objects.create_user(
@@ -37,10 +33,7 @@ class Userview(APIView):
         )
         serializer =  UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-       
                 
-                
-        
 #Login APIs        
 class Loginview(APIView):
     serializer_class = UserSerializer
@@ -51,7 +44,6 @@ class Loginview(APIView):
             return Response({'token': str(token[0])})
         return Response({'details': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
      
-
 #UserDetails APIs
 class UserDetailsView(APIView):
     serializer_class = UserSerializer
@@ -77,8 +69,6 @@ class UserDetailsView(APIView):
        user.delete()
        return Response(({"message": "User is deleted"}),status=status.HTTP_204_NO_CONTENT)     
         
-
-
 #ManagerView APIs
 class ManagerView(APIView):
     serializer_class = UserSerializer
@@ -118,7 +108,3 @@ class AssignUserView(APIView):
 def getuser(request):
     User.objects.all()
     return render(request, "app/index.html", {})
-
-
-        
-        
