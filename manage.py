@@ -20,3 +20,30 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+def post(self, request, id=None):
+            # rating = Rating.objects.get(user=request.data)                       
+            # if rating.exists():
+                serializer = self.serializer_class(data=request.data)
+                print("HTSG", serializer)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors)
+            # else:
+            #     rating.update(user=False)
+            #     return Response(({'detail' : "you have given a rating before"}), status=status.HTTP_400_BAD_REQUEST)
+            #         # raise PermissionDenied({'you have given a rating before'})
+
+
+def post(self, request):
+            rating = Rating.objects.filter(user=Token)
+            if rating.exists():
+                serializer = self.serializer_class(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors)
+            else:
+                rating.update(user=False)
+                return Response(({'message' : 'you give the rating before'}), status=status.HTTP_400_BAD_REQUEST)

@@ -1,12 +1,14 @@
 from app.serializers import UserSerializer, AssignSerializer
-from rest_framework import authentication, permissions
 from .utils import admin_required, manager_required
+from .models import User, Assign
+
+from rest_framework import authentication, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from django.contrib.auth import authenticate
 from rest_framework.views import APIView
-from .models import User, Assign
 from rest_framework import status
+
+from django.contrib.auth import authenticate
 from django.shortcuts import render
 
 
@@ -33,6 +35,7 @@ class Userview(APIView):
         )
         serializer =  UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
                 
 #Login APIs        
 class Loginview(APIView):
@@ -43,6 +46,7 @@ class Loginview(APIView):
             token = Token.objects.get_or_create(user=user)
             return Response({'token': str(token[0])})
         return Response({'details': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
+     
      
 #UserDetails APIs
 class UserDetailsView(APIView):
@@ -68,6 +72,7 @@ class UserDetailsView(APIView):
        user = User.objects.get(id=id)
        user.delete()
        return Response(({"message": "User is deleted"}),status=status.HTTP_204_NO_CONTENT)     
+ 
         
 #ManagerView APIs
 class ManagerView(APIView):
@@ -78,6 +83,7 @@ class ManagerView(APIView):
         user = User.objects.filter(role="Manager")
         serializers = self.serializer_class(user)
         return Response(serializers.data)
+
 
 #AssignView        
 class AssignUserView(APIView):
